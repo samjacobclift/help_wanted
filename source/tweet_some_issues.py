@@ -3,10 +3,10 @@ from bs4 import BeautifulSoup
 import tweepy
 import requests
 
-CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
+CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
+CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
+ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 
 def process_issue(issue):
@@ -48,6 +48,5 @@ if __name__ == "__main__":
     # TODO tweet every hr
     # TODO remember whats been tweeted
         # redis or pickle?
-    # TODO deploy to prod
     issues = scrap_issues()
     tweet_issue(issues[0])
