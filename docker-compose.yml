@@ -1,0 +1,13 @@
+version: '2'
+services:
+  app:
+    build: .
+    command: python source/tweet_some_issues.py
+    volumes:
+      - .:/code
+    environment:
+     # Load Secret Keys from ENV VARS
+     - CONSUMER_KEY=$TWITTER_CONSUMER_KEY
+     - CONSUMER_SECRET=$TWITTER_CONSUMER_SECRET
+     - ACCESS_TOKEN=$TWITTER_ACCESS_TOKEN
+     - ACCESS_TOKEN_SECRET=$TWITTER_ACCESS_TOKEN_SECRET

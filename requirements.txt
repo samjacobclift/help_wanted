@@ -1,0 +1,15 @@
+backports.shutil-get-terminal-size==1.0.0
+beautifulsoup4==4.4.1
+decorator==4.0.9
+ipython==4.2.0
+ipython-genutils==0.1.0
+oauthlib==1.1.2
+pexpect==4.1.0
+pickleshare==0.7.2
+ptyprocess==0.5.1
+requests==2.10.0
+requests-oauthlib==0.6.1
+simplegeneric==0.8.1
+six==1.10.0
+traitlets==4.2.1
+tweepy==3.5.0
