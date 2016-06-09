@@ -20,7 +20,7 @@ def process_issue(issue):
     return {'link': issue_link.attrs['href'], 'repo': repo_url.attrs['href']}
 
 
-def scrap_issues(page):
+def scrap_issues(page=None):
     """
     Scrap all the issues from a page
     of help wanted
