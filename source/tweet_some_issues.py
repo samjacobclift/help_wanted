@@ -51,6 +51,7 @@ def tweet_issue(issue):
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
     api = tweepy.API(auth)
+    print('tweeting ' + issue['link'])
     api.update_status('Take a look at this issue and help out open source ' + issue['link'])
 
 
@@ -67,10 +68,12 @@ def tweet_latest_issue():
         redis_conn.incr('PAGE_COUNT')
 
 if __name__ == "__main__":
-    redis_conn.set('ISSUE_COUNT', 1)
-    redis_conn.set('PAGE_COUNT', 1)
+    if not redis_conn.get('ISSUE_COUNT'):
+        redis_conn.set('ISSUE_COUNT', 1)
+        redis_conn.set('PAGE_COUNT', 1)
+
     # tweet the first issues
     tweet_latest_issue()
     scheduler = BlockingScheduler()
-    scheduler.add_job(tweet_latest_issue, 'interval', minutes=60)
+    scheduler.add_job(tweet_latest_issue, 'interval', seconds=60)
     scheduler.start()
