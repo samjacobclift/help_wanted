@@ -51,7 +51,7 @@ def tweet_issue(issue):
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
     api = tweepy.API(auth)
-    api.update_status('Take a look at this issue and help out open source' + issue['link'])
+    api.update_status('Take a look at this issue and help out open source ' + issue['link'])
 
 
 def tweet_latest_issue():
