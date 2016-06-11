@@ -1,6 +1,5 @@
-# Help Out Open Source Tweeter Bot
-Tweets out issues in Github repos that have high dependencies
-
+# Open Source Issue Twitter Bot
+[Tweets](https://twitter.com/HighDeps) out issues in Github repos that have high dependencies and have asked for help wanted
 
 
 # Development Commands
@@ -15,3 +14,5 @@ Can develop locally with Docker
 
 # Powered By
 - [libraries.io](https://libraries.io)
+
+# Deployed with Heroku

@@ -1,7 +1,16 @@
 import os
+
+from apscheduler.schedulers.blocking import BlockingScheduler
 from bs4 import BeautifulSoup
 import tweepy
 import requests
+
+import logging
+import redis
+
+redis_conn = redis.from_url(os.environ.get("REDIS_URL", "localhost"))
+logging.basicConfig()
+
 
 CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
 CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
@@ -29,7 +38,7 @@ def scrap_issues(page=None):
 
     # request a page if needed
     if page:
-        help_wanted_url += '?page=' + page
+        help_wanted_url += '?page=' + str(page)
 
     res = requests.get(help_wanted_url)
     soup = BeautifulSoup(res.content, 'html.parser')
@@ -42,11 +51,25 @@ def tweet_issue(issue):
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
     api = tweepy.API(auth)
-    api.update_status('here is an issue ' + issue['link'])
+    api.update_status('Take a look at this issue and help out open source' + issue['link'])
+
+
+def tweet_latest_issue():
+    page_count = int(redis_conn.get('PAGE_COUNT'))
+    issue_count = int(redis_conn.get('ISSUE_COUNT'))
+
+    try:
+        redis_conn.incr('ISSUE_COUNT')
+        issues = scrap_issues(page_count)
+        tweet_issue(issues[issue_count])
+    except IndexError:
+        redis_conn.set('ISSUE_COUNT', 0)
+        redis_conn.incr('PAGE_COUNT')
 
 if __name__ == "__main__":
-    # TODO tweet every hr
-    # TODO remember whats been tweeted
-        # redis or pickle?
-    issues = scrap_issues()
-    tweet_issue(issues[0])
+    redis_conn.set('ISSUE_COUNT', 0)
+    redis_conn.set('PAGE_COUNT', 1)
+
+    scheduler = BlockingScheduler()
+    scheduler.add_job(tweet_latest_issue, 'interval', seconds=10)
+    scheduler.start()
