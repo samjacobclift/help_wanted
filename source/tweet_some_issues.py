@@ -67,7 +67,7 @@ def tweet_latest_issue():
         redis_conn.incr('PAGE_COUNT')
 
 if __name__ == "__main__":
-    redis_conn.set('ISSUE_COUNT', 0)
+    redis_conn.set('ISSUE_COUNT', 1)
     redis_conn.set('PAGE_COUNT', 1)
     # tweet the first issues
     tweet_latest_issue()
