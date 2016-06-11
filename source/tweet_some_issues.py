@@ -75,5 +75,5 @@ if __name__ == "__main__":
     # tweet the first issues
     tweet_latest_issue()
     scheduler = BlockingScheduler()
-    scheduler.add_job(tweet_latest_issue, 'interval', seconds=60)
+    scheduler.add_job(tweet_latest_issue, 'interval', minutes=60)
     scheduler.start()
