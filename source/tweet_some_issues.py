@@ -69,7 +69,8 @@ def tweet_latest_issue():
 if __name__ == "__main__":
     redis_conn.set('ISSUE_COUNT', 0)
     redis_conn.set('PAGE_COUNT', 1)
-
+    # tweet the first issues
+    tweet_latest_issue()
     scheduler = BlockingScheduler()
-    scheduler.add_job(tweet_latest_issue, 'interval', seconds=10)
+    scheduler.add_job(tweet_latest_issue, 'interval', minutes=60)
     scheduler.start()
