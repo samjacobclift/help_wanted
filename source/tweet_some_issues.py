@@ -52,7 +52,10 @@ def tweet_issue(issue):
 
     api = tweepy.API(auth)
     print('tweeting ' + issue['link'])
-    api.update_status('Take a look at this issue and help out open source ' + issue['link'])
+    try:
+        api.update_status('Take a look at this issue and help out open source ' + issue['link'])
+    except tweepy.error.TweepError:
+        print('tweeting an existing tweet continuing')
 
 
 def tweet_latest_issue():
