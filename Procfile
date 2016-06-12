@@ -1,1 +1,1 @@
-web: python source/tweet_some_issues.py --log-file -
+worker: python source/tweet_some_issues.py --log-file -
