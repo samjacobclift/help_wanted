@@ -46,14 +46,23 @@ def scrap_issues(page=None):
     return [process_issue(i) for i in issues]
 
 
+def get_repo_language(repo_link):
+    """
+    Get the repos language
+    """
+    repo_link = '/'.join(repo_link.split('/')[2:])
+    return requests.get('https://api.github.com/repos/' + repo_link).json()['language']
+
+
 def tweet_issue(issue):
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
     api = tweepy.API(auth)
-    print('tweeting ' + issue['link'])
+    lang = get_repo_language(issue['repo'])
+
     try:
-        api.update_status('Take a look at this issue and help out open source ' + issue['link'])
+        api.update_status('Take a look at this issue and help out open source ' + issue['link'] + ' #opensource #' + lang)
     except tweepy.error.TweepError:
         print('tweeting an existing tweet continuing')
 
