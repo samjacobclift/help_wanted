@@ -17,6 +17,12 @@ CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
 ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
 ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
+BLACKLIST = ['awesome-elixir']
+
+
+class BlackListError(Exception):
+    pass
+
 
 def process_issue(issue):
     """
@@ -61,23 +67,35 @@ def tweet_issue(issue):
     api = tweepy.API(auth)
     lang = get_repo_language(issue['repo'])
 
-    try:
-        api.update_status('Take a look at this issue and help out open source ' + issue['link'] + ' #opensource #' + lang)
-    except tweepy.error.TweepError:
-        print('tweeting an existing tweet continuing')
+    in_black_list = any([item in issue['link'] for item in BLACKLIST])
+
+    if not in_black_list:
+        try:
+            api.update_status('Take a look at this issue and help out open source ' + issue['link'] + ' #opensource #' + lang)
+        except tweepy.error.TweepError:
+            print('tweeting an existing tweet continuing')
+    else:
+        print('skipping as in black list ', issue)
+        raise BlackListError()
 
 
 def tweet_latest_issue():
     page_count = int(redis_conn.get('PAGE_COUNT'))
     issue_count = int(redis_conn.get('ISSUE_COUNT'))
+    tweeting = True
 
-    try:
-        redis_conn.incr('ISSUE_COUNT')
-        issues = scrap_issues(page_count)
-        tweet_issue(issues[issue_count])
-    except IndexError:
-        redis_conn.set('ISSUE_COUNT', 0)
-        redis_conn.incr('PAGE_COUNT')
+    while tweeting:
+        try:
+            redis_conn.incr('ISSUE_COUNT')
+            issues = scrap_issues(page_count)
+            tweet_issue(issues[issue_count])
+            tweeting = False
+
+        except IndexError:
+            redis_conn.set('ISSUE_COUNT', 0)
+            redis_conn.incr('PAGE_COUNT')
+        except BlackListError:
+            continue
 
 if __name__ == "__main__":
     if not redis_conn.get('ISSUE_COUNT'):
