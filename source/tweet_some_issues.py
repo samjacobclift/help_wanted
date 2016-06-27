@@ -80,11 +80,12 @@ def tweet_issue(issue):
 
 
 def tweet_latest_issue():
-    page_count = int(redis_conn.get('PAGE_COUNT'))
-    issue_count = int(redis_conn.get('ISSUE_COUNT'))
     tweeting = True
 
     while tweeting:
+        page_count = int(redis_conn.get('PAGE_COUNT'))
+        issue_count = int(redis_conn.get('ISSUE_COUNT'))
+
         try:
             redis_conn.incr('ISSUE_COUNT')
             issues = scrap_issues(page_count)
